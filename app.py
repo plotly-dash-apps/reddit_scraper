@@ -86,12 +86,16 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 app.title=tabtitle
 
-########### Layout
+########### Layout ###########
 
 app.layout = html.Div(children=[
     html.H1('Webscraping posts from reddit'),
     # Dropdowns
     html.Div(children=[
+        html.Div(dcc.Input(id='input-on-submit', type='text')),
+        html.Button('Scrape Now!', id='submit-val', n_clicks=0),
+        html.Div(id='container-button-basic',
+             children='Enter a value and press submit'),
         dcc.Graph(
             id='figure-1',
             figure=fig
@@ -106,6 +110,20 @@ app.layout = html.Div(children=[
     html.A("Data Source", href=sourceurl),
     ]
 )
+
+########### Callback ###########
+
+@app.callback(
+    Output('container-button-basic', 'children'),
+    Input('submit-val', 'n_clicks'),
+    State('input-on-submit', 'value')
+)
+def update_output(n_clicks, value):
+    return 'The input value was "{}" and the button has been clicked {} times'.format(
+        value,
+        n_clicks
+    )
+
 
 ############ Deploy
 if __name__ == '__main__':
