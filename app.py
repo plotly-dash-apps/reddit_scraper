@@ -42,12 +42,11 @@ app.layout = html.Div(children=[
 ########### Callback ###########
 
 @app.callback(
-    Output('message', 'children'),
-    Output('figure-1', 'figure'),
+    [Output('message', 'children'),
+    Output('figure-1', 'figure')],
     [Input('submit-val', 'n_clicks')],
     )
 def update_output(n_clicks):
-
     if n_clicks==0:
         message = f"Click the button"
         return message, base_fig()
