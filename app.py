@@ -15,7 +15,7 @@ import datetime
 # define a scraper function
 def lovely_soup(url):
     r = requests.get(url, headers = {'User-agent': 'Agent_Smith'})
-    return BeautifulSoup(r.text)
+    return BeautifulSoup(r.text, 'lxml')
 # write a function to clean up the post
 def clean_that_post(row):
     x = row.split(' (self.AskReddit)')
