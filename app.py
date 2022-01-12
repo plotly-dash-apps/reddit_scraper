@@ -2,77 +2,10 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import plotly.graph_objs as go
 from dash.dependencies import Input, Output, State
-import requests
-from bs4 import BeautifulSoup
-import pandas as pd
-import datetime
+import plotly.graph_objs as go
+from helpers import *
 
-
-########### Functions  ######
-# All of this should be moved to a helper script.
-# define a scraper function
-def lovely_soup(url):
-    r = requests.get(url, headers = {'User-agent': 'Agent_Smith'})
-    return BeautifulSoup(r.text, 'lxml')
-# write a function to clean up the post
-def clean_that_post(row):
-    x = row.split(' (self.AskReddit)')
-    return x[0]
-# write a function to clean up the date
-def parse_that_date(row):
-    x = row.split(' ')[1:]
-    y = ' '.join(x)
-    z = '2020 '+ y
-    return z[:20]
-
-########### Scraping ######
-
-# apply the function to our reddit source
-url = 'https://old.reddit.com/r/AskReddit/'
-soup = lovely_soup(url)
-# create a list of titles
-titles = soup.findAll('p', {'class': 'title'})
-titleslist=[]
-for title in titles:
-    titleslist.append(title.text)
-# create a list of dates
-dates = soup.findAll('time', {'class':"live-timestamp"})
-dateslist=[]
-for date in dates:
-    output = str(date).split('title="')[1].split('2020')[0]
-    dateslist.append(output)
-
-########### Pandas work ######
-# convert the two lists into a pandas dataframe
-df_dict={'date':dateslist, 'post':titleslist}
-working_df = pd.DataFrame(df_dict)
-pd.set_option('display.max_colwidth', 200)
-working_df['date'] = working_df['date'].str.strip()
-
-# apply the function
-working_df['post']=working_df['post'].apply(clean_that_post)
-
-# apply the date parsing function and sort the dataframe
-working_df['cleandate']=working_df['date'].apply(parse_that_date)
-working_df['UTC_date'] = pd.to_datetime(working_df['cleandate'])
-working_df.sort_values('UTC_date', inplace=True, ascending=False)
-# split into 2 date/time variables
-working_df['date']=working_df['UTC_date'].dt.date
-working_df['time']=working_df['UTC_date'].dt.time
-final_df = working_df[['date', 'time', 'post']].copy()
-
-########### Set up the figure ######
-
-data=go.Table(columnwidth = [200,200,1000],
-                header=dict(values=final_df.columns, align=['left']),
-                cells=dict(align=['left'],
-                           values=[final_df['date'],
-                                   final_df['time'],
-                                   final_df['post'].values])
-             )
-fig = go.Figure([data])
 
 ########### Define a few variables ######
 
@@ -92,14 +25,9 @@ app.layout = html.Div(children=[
     html.H1('Webscraping posts from reddit'),
     # Dropdowns
     html.Div(children=[
-        html.Div(dcc.Input(id='input-on-submit', type='text')),
         html.Button('Scrape Now!', id='submit-val', n_clicks=0),
-        html.Div(id='container-button-basic',
-             children='Enter a value and press submit'),
-        dcc.Graph(
-            id='figure-1',
-            figure=fig
-        ),
+        html.Div(id='message'),
+        dcc.Graph(id='figure-1'),
     ], className='twelve columns'),
 
     # Footer
@@ -114,15 +42,24 @@ app.layout = html.Div(children=[
 ########### Callback ###########
 
 @app.callback(
-    Output('container-button-basic', 'children'),
-    Input('submit-val', 'n_clicks'),
-    State('input-on-submit', 'value')
-)
-def update_output(n_clicks, value):
-    return 'The input value was "{}" and the button has been clicked {} times'.format(
-        value,
-        n_clicks
+    Output('message', 'children'),
+    Output('figure-1', 'figure'),
+    [Input('submit-val', 'n_clicks')],
     )
+def update_output(n_clicks):
+
+    if n_clicks==0:
+        message = f"Click the button"
+        return message, base_fig()
+    elif n_clicks==1:
+        message = f"You've clicked that button {n_clicks} time!"
+        return message, scrape_reddit()
+    elif (n_clicks>1) & (n_clicks<5):
+        message = f"You've clicked that button {n_clicks} times!"
+        return message, error_fig()
+    else:
+        message = f"Seriously, stop clicking the button. You've clicked it {n_clicks} times. Nothing else is going to happen, punk!"
+        return message, error_fig()
 
 
 ############ Deploy
