@@ -37,7 +37,7 @@ def error_fig():
 
 # define a scraper function
 def lovely_soup(url):
-    r = requests.get(url, headers = {'User-agent': 'Agent_Smith'})
+    r = requests.get(url, headers = {'User-agent': 'class_lesson'})
     return BeautifulSoup(r.text, 'lxml')
 # write a function to clean up the post
 def clean_that_post(row):
