@@ -104,7 +104,7 @@ def scrape_reddit():
                     cells=dict(align=['left'],
                                values=[final_df['date'],
                                        final_df['time'],
-                                       final_df['post'].values
+                                       final_df['post'].values,
                                        final_df['links'].values])
                  )
     fig = go.Figure([data])
