@@ -10,7 +10,7 @@ from helpers import *
 
 tabtitle = 'Reddit Webscraper'
 sourceurl = 'https://old.reddit.com/r/AskReddit/'
-githublink = 'https://github.com/austinlasseter/reddit-webscraper-plotly'
+githublink = 'https://git.generalassemb.ly/allenchua/524-reddit-webscraper/'
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -21,7 +21,7 @@ app.title=tabtitle
 ########### Layout ###########
 
 app.layout = html.Div(children=[
-    html.H1('Webscraping posts from reddit'),
+    html.H1('Webscraping posts from reddit (w/ URLs)'),
     # Dropdowns
     html.Div(children=[
         html.Button('Scrape Now!', id='submit-val', n_clicks=0),
@@ -56,7 +56,7 @@ def update_output(n_clicks):
         message = f"You've clicked that button {n_clicks} times!"
         return message, error_fig()
     else:
-        message = f"Seriously, stop clicking the button. You've clicked it {n_clicks} times. Nothing else is going to happen, punk!"
+        message = f"Seriously, stop clicking the button. You've clicked it {n_clicks} times."
         return message, error_fig()
 
 
