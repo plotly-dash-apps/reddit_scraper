@@ -37,8 +37,9 @@ def error_fig():
 
 # define a scraper function
 def lovely_soup(url):
-    r = requests.get(url, headers = {'User-agent': 'class_lesson'})
-    return BeautifulSoup(r.text, 'lxml')
+    r = requests.get(url, headers = {'User-agent': 'just_for_testing'})
+#    return BeautifulSoup(r.text, 'lxml')
+    return BeautifulSoup(r.text, 'html')
 # write a function to clean up the post
 def clean_that_post(row):
     x = row.split(' (self.AskReddit)')
@@ -76,6 +77,10 @@ def scrape_reddit():
     for link in links:
         linkslist.append(link['href'])
     #    print(link['href'])
+    df = pd.DataFrame(linkslist)
+    def make_clickable(val):
+        return '<a target="_blank" href="{}">{}</a>'.format(val, val)
+    clickable_link = df.style.format(make_clickable)
     ########### Pandas work ######
     # convert the 3 lists into a pandas dataframe
     df_dict={'date':dateslist, 'post':titleslist, 'links':linkslist}
@@ -105,6 +110,7 @@ def scrape_reddit():
                                values=[final_df['date'],
                                        final_df['time'],
                                        final_df['post'].values,
+                                       #final_df['clickable_link'].values])
                                        final_df['links'].values])
                  )
     fig = go.Figure([data])
