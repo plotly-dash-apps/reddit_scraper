@@ -12,6 +12,7 @@ from helpers import *
 tabtitle = 'Reddit Webscraper'
 sourceurl = 'https://old.reddit.com/r/AskReddit/'
 githublink = 'https://git.generalassemb.ly/allenchua/524-reddit-webscraper/'
+image1 = 'Reddit-Logo.png'
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -22,7 +23,8 @@ app.title=tabtitle
 ########### Layout ###########
 
 app.layout = html.Div(children=[
-    html.H1('Webscraping posts from reddit (w/ URLs)'),
+    html.Img(src=app.get_asset_url(image1), style={'width': '10%', 'height': '10%'}),
+    html.H1('Webscraping posts from reddit /r/AskReddit (w/ URLs)'),
     # Dropdowns
     html.Div(children=[
         html.Button('Scrape Now!', id='submit-val', n_clicks=0),

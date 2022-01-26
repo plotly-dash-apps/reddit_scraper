@@ -5,6 +5,7 @@ import pandas as pd
 import datetime
 import lxml
 import urllib.request
+from fake_useragent import UserAgent
 
 ########### Set up the default figures ######
 
@@ -35,10 +36,29 @@ def error_fig():
 
 ########### Functions  ######
 
+ua = UserAgent()
+
+# import random
+# user_agent_list = [
+# 'Class_practice',
+# 'Mozilla/5.0',
+# 'Chrome/83.0.4103.97 ',
+# 'Safari/537.36',
+# ]
+# #url = 'https://httpbin.org/headers'
+# for i in range(1,4):
+# #Pick a random user agent
+#     user_agent = random.choice(user_agent_list)
+# #Set the headers
+#     headers = {'User-Agent': user_agent}
+
 # define a scraper function
 def lovely_soup(url):
-    r = requests.get(url, headers = {'User-agent': 'just_for_testing'})
-#    return BeautifulSoup(r.text, 'lxml')
+#     h = {'User-Agent': ua.Chrome}
+#     # r = get(u, headers=h)
+    r = requests.get(url, headers = {'User-agent': 'class_practice'})
+#     r = requests.get(url, headers=h)
+# #    return BeautifulSoup(r.text, 'lxml')
     return BeautifulSoup(r.text, 'html')
 # write a function to clean up the post
 def clean_that_post(row):
